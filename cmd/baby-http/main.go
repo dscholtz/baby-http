@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dscholtz/baby-http.git/pkg/handler"
+	"github.com/dscholtz/baby-http.git/pkg/middleware"
 	"github.com/dscholtz/baby-http.git/pkg/request"
 	"github.com/dscholtz/baby-http.git/pkg/router"
 )
@@ -13,6 +14,7 @@ var helloHandler = handler.HandlerFunc(func(req *request.Request) *request.Respo
 	return request.NewResponse(200, "Hello from baby-http!")
 })
 
+// add a about handler struct
 type AboutHandler struct{}
 
 func (h AboutHandler) Serve(req *request.Request) *request.Response {
@@ -25,7 +27,7 @@ func main() {
 	r := router.New()
 
 	// register a hello route and its hello handler
-	r.Handle("/hello", helloHandler)
+	r.Handle("/hello", middleware.Logging(helloHandler))
 	r.Handle("/about", AboutHandler{})
 
 	// simulate a request to /hello
